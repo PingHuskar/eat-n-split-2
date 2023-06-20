@@ -46,7 +46,7 @@ function App() {
   }
 
   function handleClearFriends() {
-    if (confirm(`You Want To Clear All Friends? This Action Can't be Undo!`)) {
+    if (confirm(`You Want To Clear All Friends? This Action Can't be Undone!`)) {
       localStorage.setItem(`friends`, `[]`)
       setFriends(JSON.parse(localStorage.getItem(`friends`)!))
     }
@@ -77,6 +77,7 @@ function App() {
         {selectedFriend 
         && <FormSplitBill selectedFriend={selectedFriend} 
           onSplitBill={handleSplitBill}
+          key={selectedFriend.name}
         />}
       </div>
     </>
@@ -170,7 +171,10 @@ function FormSplitBill({selectedFriend, onSplitBill}: {selectedFriend: any, onSp
 
     <label htmlFor="billvalue">💵 Bill value</label>
     <input type="number" name="billvalue" id="billvalue" value={bill}
-    onChange={(e) => setBill(Number(e.target.value.replace(/[^0-9]/g,``)))} />
+    onChange={(e) => {
+      setBill(Number(e.target.value.replace(/[^0-9]/g,``)))
+      setPaidByUser(Math.round(Number(e.target.value.replace(/[^0-9]/g,``))/2))
+    }} />
 
     <label htmlFor="yourexpense">💵 Your expense</label>
     <input type="number" name="yourexpense" id="yourexpense" value={paidByUser}
@@ -187,7 +191,9 @@ function FormSplitBill({selectedFriend, onSplitBill}: {selectedFriend: any, onSp
       <option value="user">Me</option>
       <option value="friend">{selectedFriend.name}</option>
     </select>
-    <Button onClick={() => {}}>Split bill</Button>
+    {paidByUser !== paidByFriend &&
+      <Button onClick={() => {}}>Split bill</Button>
+    }
   </form>
 }
 
